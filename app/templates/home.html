@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<header class="topbar">
+  <div>
+    <h2>Welcome back, {{ user }} 👋</h2>
+    <p class="muted">BANKING77 Intent Classification Dashboard</p>
+  </div>
+  <span class="badge">TF-IDF + Logistic Regression</span>
+</header>
+
+<div class="stats-row">
+  <div class="stat-card">
+    <span class="stat-icon">🎯</span>
+    <div>
+      <div class="stat-num">{% if metrics %}{{ "%.1f"|format(metrics.accuracy * 100) }}%{% else %}—{% endif %}</div>
+      <div class="stat-desc">Model Accuracy</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <span class="stat-icon">🏷️</span>
+    <div>
+      <div class="stat-num">{{ num_labels }}</div>
+      <div class="stat-desc">Intent Classes</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <span class="stat-icon">📊</span>
+    <div>
+      <div class="stat-num">{% if metrics %}{{ metrics.train_size }}{% else %}—{% endif %}</div>
+      <div class="stat-desc">Training Samples</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <span class="stat-icon">✅</span>
+    <div>
+      <div class="stat-num">{% if metrics %}{{ "%.1f"|format(metrics.macro_f1 * 100) }}%{% else %}—{% endif %}</div>
+      <div class="stat-desc">Macro F1</div>
+    </div>
+  </div>
+</div>
+
+<section class="card">
+  <h3>Quick Actions</h3>
+  <div class="actions-grid">
+    <a href="{{ url_for('main.classify_page') }}" class="action-card">
+      <span class="action-icon">🏷️</span>
+      <strong>Classify Ticket</strong>
+      <p>Paste a customer message and get the predicted intent + confidence.</p>
+    </a>
+    <a href="{{ url_for('main.chatbot_page') }}" class="action-card">
+      <span class="action-icon">💬</span>
+      <strong>Support Chatbot</strong>
+      <p>Chat with an intent-aware assistant that uses the same NLP model.</p>
+    </a>
+    <a href="{{ url_for('main.history_page') }}" class="action-card">
+      <span class="action-icon">📜</span>
+      <strong>Prediction History</strong>
+      <p>Review recent classifications and low-confidence tickets.</p>
+    </a>
+  </div>
+</section>
+
+{% if recent %}
+<section class="card">
+  <h3>Recent Classifications</h3>
+  <table class="history-table">
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Ticket</th>
+        <th>Intent</th>
+        <th>Confidence</th>
+        <th>Review?</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for h in recent %}
+      <tr>
+        <td>{{ h.timestamp }}</td>
+        <td class="preview">{{ h.text }}</td>
+        <td><code>{{ h.intent }}</code></td>
+        <td>{{ h.confidence_pct }}</td>
+        <td>{% if h.needs_human_review %}⚠️ Yes{% else %}✓{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+
+<section class="card">
+  <h3>About the Model</h3>
+  <p class="muted">
+    Trained on the <strong>BANKING77</strong> dataset (PolyAI) — 13,083 customer-support queries across 77 fine-grained banking intents.
+    The current model is a classical <strong>TF-IDF + Logistic Regression</strong> pipeline that runs fully offline with no external API keys.
+  </p>
+  {% if metrics %}
+  <div class="metrics-grid" style="margin-top:16px">
+    <div class="metric">
+      <span class="metric-value">{{ "%.2f"|format(metrics.accuracy * 100) }}%</span>
+      <span class="metric-label">Accuracy</span>
+    </div>
+    <div class="metric">
+      <span class="metric-value">{{ "%.2f"|format(metrics.macro_f1 * 100) }}%</span>
+      <span class="metric-label">Macro F1</span>
+    </div>
+    <div class="metric">
+      <span class="metric-value">{{ "%.2f"|format(metrics.precision_macro * 100) }}%</span>
+      <span class="metric-label">Precision</span>
+    </div>
+    <div class="metric">
+      <span class="metric-value">{{ "%.2f"|format(metrics.recall_macro * 100) }}%</span>
+      <span class="metric-label">Recall</span>
+    </div>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

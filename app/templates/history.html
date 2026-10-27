@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}History{% endblock %}
+
+{% block content %}
+<header class="topbar">
+  <h2>Prediction History</h2>
+  <span class="badge">Session</span>
+</header>
+
+<section class="card">
+  {% if history %}
+  <table class="history-table">
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>User</th>
+        <th>Ticket</th>
+        <th>Intent</th>
+        <th>Confidence</th>
+        <th>Human Review?</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for h in history %}
+      <tr>
+        <td>{{ h.timestamp }}</td>
+        <td>{{ h.user or '—' }}</td>
+        <td class="preview">{{ h.text }}</td>
+        <td><code>{{ h.intent }}</code></td>
+        <td>{{ h.confidence_pct }}</td>
+        <td>{% if h.needs_human_review %}<span class="tag warn">Yes</span>{% else %}<span class="tag ok">No</span>{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted">No predictions yet. Go to <a href="{{ url_for('main.classify_page') }}">Classify Ticket</a> to create some.</p>
+  {% endif %}
+</section>
+{% endblock %}

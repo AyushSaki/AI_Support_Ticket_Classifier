@@ -1,0 +1,11 @@
+{
+  "accuracy": 0.8422077922077922,
+  "macro_f1": 0.8422637559897238,
+  "weighted_f1": 0.8422637559897237,
+  "precision_macro": 0.8533578444264789,
+  "recall_macro": 0.8422077922077923,
+  "num_classes": 77,
+  "train_size": 10003,
+  "test_size": 3080,
+  "model_type": "TF-IDF + LogisticRegression (saga)"
+}

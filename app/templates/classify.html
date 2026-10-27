@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Classify{% endblock %}
+
+{% block content %}
+<header class="topbar">
+  <h2>Classify Support Ticket</h2>
+  <span class="badge">{{ num_labels }} intents</span>
+</header>
+
+<section class="card">
+  <h3>Enter Support Ticket</h3>
+  <p class="muted">Paste a customer message and get the predicted intent with confidence.</p>
+
+  <form id="classify-form" onsubmit="return false;">
+    <textarea
+      id="ticket-text"
+      name="text"
+      rows="4"
+      placeholder="e.g. My card hasn't arrived yet after two weeks..."
+      required
+    ></textarea>
+    <div class="form-actions">
+      <button type="submit" id="classify-btn" class="btn primary">Classify Ticket</button>
+      <button type="button" id="clear-btn" class="btn ghost">Clear</button>
+    </div>
+  </form>
+
+  <div id="result" class="result hidden">
+    <div class="result-header">
+      <div>
+        <span class="label">Predicted Intent</span>
+        <h3 id="intent-name">—</h3>
+      </div>
+      <div class="confidence-box">
+        <span class="label">Confidence</span>
+        <div id="confidence-value" class="confidence">—</div>
+      </div>
+    </div>
+    <div id="review-banner" class="review-banner hidden">
+      ⚠️ Low confidence — recommended for human review
+    </div>
+    <div class="top-k">
+      <h4>Top 3 Predictions</h4>
+      <ul id="top-k-list"></ul>
+    </div>
+  </div>
+
+  <div id="loading" class="loading hidden">
+    <div class="spinner"></div>
+    <span>Classifying...</span>
+  </div>
+</section>
+
+{% if history %}
+<section class="card">
+  <h3>Recent Predictions</h3>
+  <table class="history-table">
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Ticket</th>
+        <th>Intent</th>
+        <th>Confidence</th>
+        <th>Review?</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for h in history %}
+      <tr>
+        <td>{{ h.timestamp }}</td>
+        <td class="preview">{{ h.text }}</td>
+        <td><code>{{ h.intent }}</code></td>
+        <td>{{ h.confidence_pct }}</td>
+        <td>{% if h.needs_human_review %}⚠️{% else %}✓{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const THRESHOLD = {{ threshold }};
+</script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}TicketAI{% endblock %} · Support Classifier</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <div class="app">
+    {% if user is defined and user %}
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">🎫</div>
+        <div>
+          <h1>TicketAI</h1>
+          <p class="tagline">BANKING77 Classifier</p>
+        </div>
+      </div>
+
+      <nav>
+        <a href="{{ url_for('main.home') }}" class="nav-item {% if request.endpoint == 'main.home' %}active{% endif %}">🏠 Home</a>
+        <a href="{{ url_for('main.classify_page') }}" class="nav-item {% if request.endpoint == 'main.classify_page' %}active{% endif %}">🏷️ Classify Ticket</a>
+        <a href="{{ url_for('main.chatbot_page') }}" class="nav-item {% if request.endpoint == 'main.chatbot_page' %}active{% endif %}">💬 Chatbot</a>
+        <a href="{{ url_for('main.history_page') }}" class="nav-item {% if request.endpoint == 'main.history_page' %}active{% endif %}">📜 History</a>
+      </nav>
+
+      <div class="sidebar-footer user-box">
+        <div class="user-info">
+          <span class="avatar">{{ user[0]|upper }}</span>
+          <span class="username">{{ user }}</span>
+        </div>
+        <a href="{{ url_for('main.logout') }}" class="logout-btn">Logout</a>
+      </div>
+    </aside>
+    {% endif %}
+
+    <main class="main {% if not user is defined or not user %}full{% endif %}">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Chatbot{% endblock %}
+
+{% block content %}
+<header class="topbar">
+  <div>
+    <h2>Support Chatbot</h2>
+    <p class="muted">Intent-aware assistant powered by the BANKING77 classifier</p>
+  </div>
+  <span class="badge">Live</span>
+</header>
+
+<section class="card chat-card">
+  <div id="chat-window" class="chat-window">
+    {% if history %}
+      {% for m in history %}
+        <div class="msg {{ m.role }}">
+          <div class="bubble">
+            {{ m.text }}
+            {% if m.role == 'bot' and m.intent %}
+            <div class="meta">Detected: <code>{{ m.intent }}</code> · {{ m.confidence_pct }}</div>
+            {% endif %}
+          </div>
+          <span class="time">{{ m.time }}</span>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="msg bot">
+        <div class="bubble">
+          Hello! 👋 I'm TicketAI. Ask me about cards, transfers, payments, fees, PIN changes and more.
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <div id="suggestions" class="suggestions"></div>
+
+  <form id="chat-form" class="chat-form" onsubmit="return false;">
+    <input
+      type="text"
+      id="chat-input"
+      placeholder="Type your message... (e.g. My card hasn't arrived)"
+      autocomplete="off"
+      required
+    />
+    <button type="submit" id="send-btn" class="btn primary">Send</button>
+  </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='chatbot.js') }}"></script>
+{% endblock %}
